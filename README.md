@@ -24,7 +24,13 @@ Cada punto enumerado como **_Paso_**, se corresponde con un commit del proyecto.
    esa interfaz.
     - Para ello obtenemos el contexto de la aplicación devuelto por `SpringApplication.run`, y el nombre de la clase 
    del bean _DataSource.class_. Con la versión de Spring 3.4.5, debería ser _HikariDataSource_. 
-    
-3. 
+    - **NOTA: Para ver las implementaciones disponibles de _DataSource_, hacer clic con el botón derecho en _DataSource_ 
+   y seleccionar <GO TO> e <Implementation(s)>**
+   
+3. ### Paso 3 - Uso de la clase JdbcTemplate y prueba con una consulta simple.
+   * NOTA: Consultar la ficha resumen para ver en qué consiste y un par de formas de acceder a ella. Cada commit de
+   este paso, usa una forma de inyección distinta para ver cómo se codifica.
+     1. Creando una variable local (como hicimos en el paso anterior) y obteniéndo `JdbcTemplate` del contexto.
+
    
     
