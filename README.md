@@ -16,6 +16,15 @@ Cada punto enumerado como **_Paso_**, se corresponde con un commit del proyecto.
      * JDBC API.
      * PostgreSQL Driver.
    * Se asigna la url del repositorio remoto.
-2. ### Paso 2 -  Configuración del driver
+2. ### Paso 2 -  Configuración del driver, activación de logs y obtención de pool utilizado por Spring.
+    * Para evitar usar sout en cada mensaje de comprobación que queramos visualizar en la consola, utilizaremos 
+   un _logger_. Spring incluye SLF4J por defecto (pero con una implementación básica).
+    - NOTA: Para obtener el pool que utiliza Spring, necesitamos saber que tipo de _DataSource_ utiliza la aplicación.
+   _Datasource_ es una interfaz, por lo que, lo que realmente queremos saber es qué implementación incluye Spring de 
+   esa interfaz.
+    - Para ello obtenemos el contexto de la aplicación devuelto por `SpringApplication.run`, y el nombre de la clase 
+   del bean _DataSource.class_. Con la versión de Spring 3.4.5, debería ser _HikariDataSource_. 
+    
+3. 
    
     
