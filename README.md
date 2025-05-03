@@ -31,6 +31,12 @@ Cada punto enumerado como **_Paso_**, se corresponde con un commit del proyecto.
    * NOTA: Consultar la ficha resumen para ver en qué consiste y un par de formas de acceder a ella. Cada commit de
    este paso, usa una forma de inyección distinta para ver cómo se codifica.
      1. Creando una variable local (como hicimos en el paso anterior) y obteniéndo `JdbcTemplate` del contexto.
+     2. Inyectando JdbcTemplate mediante la anotación @Autowired. Este modo de inyección no permite usar una variable 
+     local como antes ya que debería ser estática (el método `main` es estático) y esto significa que debe estar 
+     disponible en el momento de crear la clase, pero `JdbcTemplate` no se ha creado todavía, por lo que su valor es 
+     `null`. Por eso, es necesario utilizar un método que se ejecute fuera del contexto estático y para implementamos
+     la interfaz `ApplicationRunner` que permite ejecutar su método run inmediatamente después de crear la clase. De
+     esta forma, podemos usar la variable que contiene nuestra template.
 
    
     
