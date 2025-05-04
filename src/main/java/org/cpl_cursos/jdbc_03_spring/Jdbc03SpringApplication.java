@@ -21,11 +21,14 @@ public class Jdbc03SpringApplication implements ApplicationRunner {
 		SpringApplication.run(Jdbc03SpringApplication.class, args);
 	}
 
-	@Override
 	public void run(ApplicationArguments args) {
-		// para mayor claridad del código, separamos la consulta del mensaje en consola
-		// ejecutamos una consulta para probar la conexión
-		Integer ultCli = temp.queryForObject("SELECT MAX(codigo_cliente) FROM cliente", Integer.class);
-		log.info("El último cliente añadido tiene el código: " + ultCli);
+		// Consulta SQL
+		String qry = """
+			INSERT INTO oficina (codigo_oficina, ciudad, pais, region, codigo_postal, telefono, linea_direccion1)
+				VALUES (?,?,?,?,?,?,?)
+			""";
+		// Al consultar la firma de <update> se observa que devuelve un entero con el número de filas actualizadas
+		int filas = temp.update(qry, "AGP-ES", "Málaga", "España", "Andalucía","29023", "951 567 432", "C/ Larios 26");
+		log.info("Se han añadido " + filas + " oficinas");
 	}
 }

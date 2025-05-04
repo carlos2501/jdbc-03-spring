@@ -7,7 +7,8 @@ En este documento se indican los pasos a seguir y, cuando procede, los comentari
 transcurso de la clase.
 
 Cada punto enumerado como **_Paso_**, se corresponde con un commit del proyecto.
-1. ### Paso 1 - Explicación de cómo se crea un proyecto para Spring.
+
+### 1.  Paso 1 - Explicación de cómo se crea un proyecto para Spring.
    * Desde spring [initializr](https://start.spring.io/index.html).
    * Desde el IDE de IntelliJ.
    - NOTA: Proyecto Maven en Spring 3.4.5 (o la última versión estable) con las dependencias:
@@ -16,18 +17,21 @@ Cada punto enumerado como **_Paso_**, se corresponde con un commit del proyecto.
      * JDBC API.
      * PostgreSQL Driver.
    * Se asigna la url del repositorio remoto.
-2. ### Paso 2 -  Configuración del driver, activación de logs y obtención de pool utilizado por Spring.
-    * Para evitar usar sout en cada mensaje de comprobación que queramos visualizar en la consola, utilizaremos 
+
+### 2.  Paso 2 -  Configuración del driver, activación de logs y obtención de pool utilizado por Spring.
+* Para evitar usar sout en cada mensaje de comprobación que queramos visualizar en la consola, utilizaremos 
    un _logger_. Spring incluye SLF4J por defecto (pero con una implementación básica).
-    - NOTA: Para obtener el pool que utiliza Spring, necesitamos saber que tipo de _DataSource_ utiliza la aplicación.
+
+* NOTA: Para obtener el pool que utiliza Spring, necesitamos saber que tipo de _DataSource_ utiliza la aplicación.
    _Datasource_ es una interfaz, por lo que, lo que realmente queremos saber es qué implementación incluye Spring de 
-   esa interfaz.
-    - Para ello obtenemos el contexto de la aplicación devuelto por `SpringApplication.run`, y el nombre de la clase 
-   del bean _DataSource.class_. Con la versión de Spring 3.4.5, debería ser _HikariDataSource_. 
-    - **NOTA: Para ver las implementaciones disponibles de _DataSource_, hacer clic con el botón derecho en _DataSource_ 
-   y seleccionar <GO TO> e <Implementation(s)>**
-   
-3. ### Paso 3 - Uso de la clase JdbcTemplate y prueba con una consulta simple.
+   esa interfaz. Para ello obtenemos el contexto de la aplicación devuelto por `SpringApplication.run`, y el nombre de la clase 
+   del bean _DataSource.class_. Con la versión de Spring 3.4.5, debería ser _HikariDataSource_.
+
+
+* **NOTA: Para ver las implementaciones disponibles de _DataSource_, hacer clic con el botón derecho en _DataSource_ 
+ y seleccionar <GO TO> e <Implementation(s)>**
+
+### 3. Paso 3 - Uso de la clase JdbcTemplate y prueba con una consulta simple.
    * NOTA: Consultar la ficha resumen para ver en qué consiste y un par de formas de acceder a ella. Cada commit de
    este paso, usa una forma de inyección distinta para ver cómo se codifica.
      1. Creando una variable local (como hicimos en el paso anterior) y obteniéndo `JdbcTemplate` del contexto.
@@ -37,6 +41,10 @@ Cada punto enumerado como **_Paso_**, se corresponde con un commit del proyecto.
      `null`. Por eso, es necesario utilizar un método que se ejecute fuera del contexto estático y para implementamos
      la interfaz `ApplicationRunner` que permite ejecutar su método run inmediatamente después de crear la clase. De
      esta forma, podemos usar la variable que contiene nuestra template.
+     
+### 4. Paso 4 - Consulta simple de inserción. 
+* El método `update` de JdbcTemplate admite un cadena -consulta SQL- y un número variable de objetos como parámetros.
 
-   
+**NOTA**: Nótese que no se incluyen los valores, ya que se enviarán como parámetros a JdbCTemplate)
+
     
