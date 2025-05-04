@@ -1,16 +1,14 @@
 package org.cpl_cursos.jdbc_03_spring.entidades;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 public class Cliente {
-    private Integer codigo_cliente;
+    private Integer codigo_cliente;     // <--Tipo Integer (Objeto wrapper)
     private String nombre_cliente;
     private String nombre_contacto;
     private String apellido_contacto;
@@ -23,5 +21,5 @@ public class Cliente {
     private String pais;
     private String codigo_postal;
     private Integer codigo_rep_ventas;
-    private Double limite_credito;
+    private Float limite_credito;
 }

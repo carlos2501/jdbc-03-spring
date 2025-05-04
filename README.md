@@ -73,17 +73,3 @@ Más adelante nos facilitará adaptar nuestro código a la arquitectura MVC.
    * NOTA: Usamos Lombok para getters, setters y constructores.
 2. Implementamos la interfaz `RowMap<t>` en la clase `ClienteMap` para asignar los resultados de una consulta a la nueva clase `Cliente`.
 3. Utilizamos la clase _mapeadora_ para poblar una instancia de Cliente con los resultados de una consulta.
-
-**¡ATENCION!** Hay un efecto colateral no relacionado con el ejemplo:
-* **Clase `Cliente`**: Tenemos `private Integer codigo_cliente;`. Con @Setter de Lombok, esto genera un método 
-`public void setCodigo_cliente(Integer codigo_cliente)`. Hay que fijarse en que el parámetro es del tipo Integer 
-(el objeto que lo empaqueta -wrapper-).
-
-* **Clase `ClienteMap`**: En la línea `cliente.setCodigo_cliente(rs.getInt("codigo_cliente"));`, el método 
-`rs.getInt("codigo_cliente")` devuelve un tipo int (el tipo primitivo).
-
-Se produce el error `cannot find symbol
-symbol:   method setCodigo_cliente(int)
-location: variable cliente of type org.cpl_cursos.jdbc_03_spring.entidades.Cliente
-`
-    
