@@ -47,7 +47,7 @@ Cada punto enumerado como **_Paso_**, se corresponde con un commit del proyecto.
 
 **NOTA**: Nótese que no se incluyen los valores, ya que se enviarán como parámetros a JdbCTemplate)
 
-### 5 Paso 5 - Consulta con parámetros con nombre.
+### 5. Paso 5 - Consulta con parámetros con nombre.
 * Necesitamos una consulta con parámetros para comprobar si la oficina se ha añadido. Utilizamos parámetros con nombre 
 (en lugar de posición como en el paso anterior).
 * Para poder utilizar parámetros con nombre, necesitamos usar otra _template_ proporcionada por Spring JDBC API llamada
@@ -62,7 +62,7 @@ como se vio anteriormente).
 `namedParameterJdbcTemplate.query...`, el IDE de IntelliJ 
 habrá creado automáticamente la sentencia @Autowired correspondiente (líneas 23 y 24) para inyectarla
 
-### Paso 6 - Asignación de resultados a objetos (_Mapeo_): clase RowMapper
+### 6. Paso 6 y 7 - Asignación de resultados a objetos (_Mapeo_): clase RowMapper
 * RowMapper es una interfaz que, mediante la implementación de sus métodos, permite asignar automáticamente los 
 resultados de una consulta a objetos.
 * Ponemos la clase que _mapea_ la consulta a la clase dentro de un nuevo paquete que denominamos "mapeadores".
@@ -71,5 +71,62 @@ Más adelante nos facilitará adaptar nuestro código a la arquitectura MVC.
 
 1. Creamos una clase para representar la tabla cliente dentro de un nuevo paquete "`entidades`".
    * NOTA: Usamos Lombok para getters, setters y constructores.
-2. Implementamos la interfaz `RowMap<t>` en la clase `ClienteMap` para asignar los resultados de una consulta a la nueva clase `Cliente`.
+2. Implementamos la interfaz `RowMap<t>` en la clase `ClienteMap` para asignar los resultados de una consulta a la 
+nueva clase `Cliente`.
 3. Utilizamos la clase _mapeadora_ para poblar una instancia de Cliente con los resultados de una consulta.
+
+### 7. Paso 8 - Ejemplo de consulta de lista registros.
+
+### 8. Paso 9 y 10 - Consulta de inserción de un registro y obtención de la clave primaria insertada.
+* Ahora se trata de insertar u nuevo registro y obtener la clave primaria del nuevo registro.
+* Esto tiene sentido cuando la PK es generada por la BBDD (campo de tipo Autoincremental)
+* **NOTA** Es necesario modificar la tabla cliente para hacer el campo `codigo_cliente` autoincremental. Para no 
+eliminarlos registros existentes, hay que modificar las propiedades del campo desde un gestos de BBDD.
+* NOTA Aunque se produce un error, se produce la inserción.
+#### Análisis del Error: `GeneratedKeyHolder` Devuelve Múltiples Claves
+#### El Problema
+Se lanza la siguiente excepción al intentar recuperar una clave primaria generada después de una inserción usando 
+`JdbcTemplate` de Spring y `GeneratedKeyHolder`:
+
+> The getKey method should only be used when a single key is returned.
+> The current key entry contains multiple keys:
+> ```
+> [{codigo_cliente=202, nombre_cliente=..., ...}]
+> ```
+
+#### Explicación
+
+Este mensaje de error indica exactamente lo que está pasando:
+
+1.  Se llamó al método `keyHolder.getKey()`.
+2.  Este método está diseñado para funcionar **solo** cuando la base de datos devuelve *un único valor* como 
+clave generada (el caso más común: una sola columna de clave primaria numérica).
+3.  Sin embargo, en este caso, el driver JDBC o la configuración de la base de datos está devolviendo no solo el 
+`codigo_cliente`, ¡sino una estructura (un `Map` dentro de una `List`) que contiene *múltiples columnas* de la 
+fila insertada! (`codigo_cliente`, `nombre_cliente`, etc.).
+4.  Como `getKey()` no sabe cuál de esas columnas es la *verdadera* clave que buscamos, lanza la excepción 
+`InvalidDataAccessApiUsageException` para señalar esta ambigüedad.
+
+#### Causa Principal
+
+La causa más probable es que, al usar `Statement.RETURN_GENERATED_KEYS` durante la creación del `PreparedStatement`,
+**no le especificamos explícitamente a Spring/JDBC cuál de las columnas** de tu tabla `cliente` es la que contiene la 
+clave generada.
+
+Cuando solo se proporciona la bandera `Statement.RETURN_GENERATED_KEYS`, algunos drivers JDBC (como el de PostgreSQL 
+en ciertas configuraciones) pueden devolver más datos que solo la(s) columna(s) de la clave primaria designada. Esto 
+podría incluir varias columnas o incluso parecerse a toda la fila insertada. 
+
+Esta falta de especificidad crea ambigüedad para el `GeneratedKeyHolder`, lo que le lleva a almacenar múltiples pares 
+clave-valor en lugar de solo la clave primaria.
+
+#### Solución
+
+La forma más directa y recomendada de solucionar esto es **indicar explícitamente el nombre de la columna (o columnas) 
+que contienen las claves generadas** al crear el `PreparedStatement`.
+
+Modificamos la línea donde creamos el `PreparedStatement` dentro de `PreparedStatementCreator`
+
+**En lugar de esto:** `Statement.RETURN_GENERATED_KEYS`
+**ponemos esto**: `new String[]{"codigo_cliente"}` 
+

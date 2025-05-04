@@ -76,7 +76,7 @@ public class Jdbc03SpringApplication implements ApplicationRunner {
 				@Override
 				public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
 					// Preparamos el statement indicando que queremos las claves generadas [1, 3, 4]
-					PreparedStatement ps = connection.prepareStatement(INSERT_SQL, Statement.RETURN_GENERATED_KEYS);
+					PreparedStatement ps = connection.prepareStatement(INSERT_SQL, new String[]{"codigo_cliente"});
 
 					// Asignamos los valores a los placeholders (?)
 					ps.setString(1, cliente.getNombre_cliente());
