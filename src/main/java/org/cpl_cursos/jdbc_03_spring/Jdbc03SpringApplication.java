@@ -11,6 +11,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.util.List;
+
 @SpringBootApplication
 public class Jdbc03SpringApplication implements ApplicationRunner {
 	@Autowired
@@ -25,11 +27,11 @@ public class Jdbc03SpringApplication implements ApplicationRunner {
 
 	public void run(ApplicationArguments args) {
 		// Consulta SQL
-		String qry = "SELECT * FROM cliente WHERE codigo_cliente = ?";
+		String qry = "SELECT * FROM cliente";
 		//
         // Clase para asignar los valores de la consulta
-        Cliente cliente = temp.queryForObject(qry, new ClienteMap(), 3);
-        assert cliente != null;
-        log.info("Los datos del cliente son {}", cliente);
+        List<Cliente> listaClientes = temp.query(qry, new ClienteMap());
+
+		listaClientes.forEach(cliente -> log.info("Cliente: {}", cliente));
 	}
 }
