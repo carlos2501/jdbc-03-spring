@@ -47,4 +47,19 @@ Cada punto enumerado como **_Paso_**, se corresponde con un commit del proyecto.
 
 **NOTA**: Nótese que no se incluyen los valores, ya que se enviarán como parámetros a JdbCTemplate)
 
+### 5 Paso 5 - Consulta con parámetros con nombre.
+* Necesitamos una consulta con parámetros para comprobar si la oficina se ha añadido. Utilizamos parámetros con nombre 
+(en lugar de posición como en el paso anterior).
+* Para poder utilizar parámetros con nombre, necesitamos usar otra _template_ proporcionada por Spring JDBC API llamada
+`NamedParameterJdbcTemplate`, que encapsula JdbcTemplate y proporciona una forma alternativa de especificar los 
+parámetros.
+* Internamente, substituye los parámetros con nombre por sus correspondientes posicionadores `?` y delega la ejecución 
+de la consulta a la `JdbcTemplate` encapsulada.
+* Para usar esta nueva _template_, hay que inyectarla (mediante @Autowired o mediante la creación de una variable, 
+como se vio anteriormente). 
+
+* NOTA: En la línea 48 de `Jdbc03SpringApplication.java`, al escribir el nombre de la variable 
+`namedParameterJdbcTemplate.query...`, el IDE de IntelliJ 
+habrá creado automáticamente la sentencia @Autowired correspondiente (líneas 23 y 24) para inyectarla
+
     
